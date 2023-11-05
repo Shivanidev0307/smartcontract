@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate Verification</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>Certificate Verification</h1>
+    <div>
+        <label for="userAddress">User Address:</label>
+        <input type="text" id="userAddress" />
+        <button onclick="getCertificate()">Get Certificate</button>
+    </div>
+    <div id="certificateInfo" style="display: none;">
+        <p>Institution: <span id="institution"></span></p>
+        <p>Degree: <span id="degree"></span></p>
+        <p>Year: <span id="year"></span></p>
+        <p>Verified: <span id="verified"></span></p>
+    </div>
+    <div id="error" class="error" style="display: none;"></div>
+    <script type="text/javascript">
+        // Function to display error messages
+        function showError(message) {
+            const errorElement = document.getElementById("error");
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+        }
+
+        async function getCertificate() {
+            const userAddress = document.getElementById("userAddress").value;
+
+            try {
+                const [institution, degree, year, isVerified] = await certificateContract.methods.getCertificate(userAddress).call();
+                
+                document.getElementById("institution").innerText = institution;
+                document.getElementById("degree").innerText = degree;
+                document.getElementById("year").innerText = year;
+                document.getElementById("verified").innerText = isVerified ? "Yes" : "No";
+
+                document.getElementById("certificateInfo").style.display = "block";
+                document.getElementById("error").style.display = "none"; // Hide any previous errors
+            } catch (error) {
+                showError("An error occurred while fetching the certificate.");
+            }
+        }
+    </script>
+</body>
+</html>
